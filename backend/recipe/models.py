@@ -1,7 +1,8 @@
+from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from users.models import User
+User = get_user_model()
 
 
 class Ingredient(models.Model):
@@ -9,9 +10,9 @@ class Ingredient(models.Model):
         verbose_name='Ингредиент',
         max_length=256
     )
-    units = models.CharField(
+    measurement_unit = models.CharField(
         verbose_name='Единица измерения',
-        max_length=64, blank=True
+        max_length=64,
     )
 
     class Meta:
@@ -20,23 +21,25 @@ class Ingredient(models.Model):
         ordering = ['name']
         constraints = [
             models.UniqueConstraint(
-                fields=['name', 'units'],
+                fields=['name', 'measurement_unit'],
                 name='unique ingredient',
             )
         ]
 
     def __str__(self):
-        return f'{self.name}, {self.units}'
+        return f'{self.name}, {self.measurement_unit}'
 
 
 class Tag(models.Model):
     name = models.CharField(
         verbose_name='Название тега',
         max_length=200,
+        unique=True,
     )
     color = models.CharField(
         verbose_name='Цвет тега',
         max_length=7,
+        unique=True,
     )
     slug = models.SlugField(
         verbose_name='Адрес тега',
@@ -57,7 +60,7 @@ class Recipe(models.Model):
         User,
         verbose_name='Автор',
         on_delete=models.CASCADE,
-        related_name='recipe',
+        related_name='recipes',
     )
     name = models.CharField(
         verbose_name='Название рецепта',
@@ -69,7 +72,6 @@ class Recipe(models.Model):
     )
     text = models.TextField(
         verbose_name='Описание рецепта',
-        max_length=1000,
     )
     ingredients = models.ManyToManyField(
         Ingredient,
@@ -102,7 +104,7 @@ class Recipe(models.Model):
         verbose_name_plural = 'Recipes'
 
     def __str__(self):
-        return self.name
+        return f'{self.name}, {self.author.username}'
 
 
 class IngredientAmount(models.Model):

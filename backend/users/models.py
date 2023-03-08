@@ -39,6 +39,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
+    class Meta:
+        ordering = ['id']
+
     def has_perm(self, perm, obj=None):
         return self.is_superuser
 
@@ -70,6 +73,7 @@ class Follow(models.Model):
     )
 
     class Meta:
+        ordering = ('id',)
         verbose_name = 'follow'
         verbose_name_plural = 'follows'
         constraints = (
