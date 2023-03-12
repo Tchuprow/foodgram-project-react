@@ -9,7 +9,7 @@ services:
       - ./.env
 
   backend:
-    image: paveltchuprow/backend:v1
+    image: paveltchuprow/backend:v2
     # build:
     #  context: ../backend/
     restart: always
