@@ -51,7 +51,7 @@ class CustomUserSerializer(UserSerializer):
         )
 
     def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
+        user = self.context['request'].user
         if user.is_anonymous:
             return False
         return Follow.objects.filter(
@@ -73,10 +73,10 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
 
 class FollowSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.get_queryset().order_by('id')
+        queryset=User.objects.all()
     )
     following = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.get_queryset().order_by('id')
+        queryset=User.objects.all()
     )
 
     class Meta:
